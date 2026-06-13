@@ -21,6 +21,12 @@ function App() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight; 
+
+    console.log(canvas.width, canvas.height); // Debugging: Check if canvas dimensions are set correctly
+    console.log(canvas.clientWidth, canvas.clientHeight);
     const width = canvas.width, height = canvas.height;
     const xMin = -5, xMax = 5;
     const yMin = -5, yMax = 5;
@@ -28,12 +34,19 @@ function App() {
     const toCanvasX = (x: number) => ((x - xMin) / (xMax - xMin)) * width;
     const toCanvasY = (y: number) => height - ((y - yMin) / (yMax - yMin)) * height;
 
+    // ctx.save();
+    // ctx.translate(0.5, 0.5);
+    // ctx.lineWidth = 1;
+    // ctx.strokeStyle = '#333';
+    
     ctx.clearRect(0, 0, width, height);
     // Draw lines
     ctx.beginPath();
     ctx.moveTo(toCanvasX(0), 0); ctx.lineTo(toCanvasX(0), height);// <Y-axis>
     ctx.moveTo(0, toCanvasY(0)); ctx.lineTo(width, toCanvasY(0));// <X-axis>
     ctx.stroke();
+
+    // ctx.restore();
 
     // Plot function
     ctx.beginPath();
