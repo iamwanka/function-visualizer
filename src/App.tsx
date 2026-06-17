@@ -1,5 +1,6 @@
 import {useRef, useState, useEffect} from 'react'
 import './App.css'
+import InputCard from './assets/components/InputCard';
 
 // Math evaluation - using Function constructor for simplicity, but consider using a library like math.js for more complex expressions and security
 const evaluateFunction = (expr: string, x: number, variables: Record<string, number>) =>{
@@ -9,12 +10,19 @@ const evaluateFunction = (expr: string, x: number, variables: Record<string, num
 
 function App() {
   // Is the same effect as getContext('2d') but with type safety
+  // How to change the type of button
+  // Every new inputcard will have its own state 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [exp, setExp] = useState<string>('a * Math.sin(x)');
+  const [listFunctions, setListFunctions] = useState<Record<number, string>>({0: 'Math.sin(x) + Math.cos(x)', 1: 'Math.cos(x)'});
   const [a, setA] = useState<number>(1);
+  // const [idfunction, setIdFunction] = useState<number>(0);
 
   // Drawing function (same logic as Vanilla)
   const drawGraph = () => {
+    /*
+    We need this every time due to resizing and to ensure we have the correct dimensions for the canvas.
+     */
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -34,10 +42,7 @@ function App() {
     const toCanvasX = (x: number) => ((x - xMin) / (xMax - xMin)) * width;
     const toCanvasY = (y: number) => height - ((y - yMin) / (yMax - yMin)) * height;
 
-    // ctx.save();
-    // ctx.translate(0.5, 0.5);
-    // ctx.lineWidth = 1;
-    // ctx.strokeStyle = '#333';
+    
     
     ctx.clearRect(0, 0, width, height);
     // Draw lines
@@ -73,6 +78,14 @@ function App() {
     ctx.stroke();
   };
 
+  //Handler to update  specific function in the list
+  const updateFunctionValue = (id: number, newValue: string) => {
+    setListFunctions(prev => ({
+      ...prev,
+      [id] : newValue // Updates only the modified key, keeping the rest intact
+    }))
+  }
+
   // Redraw whenever the expression or variable changes
   useEffect(() => {
     drawGraph();
@@ -87,6 +100,15 @@ function App() {
         <label>a = </label>
         <input value={a} onChange={e => setA(parseFloat(e.target.value))} type="number" id="a-input" step="0.1" />
         <span>{a.toFixed(2)}</span>
+          {Object.entries(listFunctions).map(([id, value]) => (
+            <InputCard 
+              key={id} 
+              idFunction={Number(id)} // Object keys become strings in entries, convert back to number
+              useFunction={value} 
+              onSave={updateFunctionValue}
+            />
+          ))}
+          {/* <InputCard /> */}
       </section>
     </div>
   )
