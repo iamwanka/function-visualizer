@@ -4,11 +4,12 @@ interface InputCardProps {
     idFunction: number;
     useFunction: string;
     onSave: (id: number, newValue: string) => void; // Callback to update the function in the parent
+    onDelete: (id: number) => void; // Callback to delete the function from the parent
 }
 
 
 
-function InputCard({ idFunction, useFunction, onSave }: InputCardProps) {
+function InputCard({ idFunction, useFunction, onSave, onDelete }: InputCardProps) {
     const [inputValue, setInputValue] = useState<string>(useFunction);
 
     // This works as a way to update the local state of the input card whenever the parent state changes, for example when we add a new function or when we update a function from another input card.
@@ -40,6 +41,7 @@ function InputCard({ idFunction, useFunction, onSave }: InputCardProps) {
             value={inputValue} 
             onChange={(e) => setInputValue(e.target.value)} 
             onKeyDown={handleKeyDown} />
+            <button onClick={() => onDelete(idFunction)}>Delete</button>
         </div>
     );
 };
